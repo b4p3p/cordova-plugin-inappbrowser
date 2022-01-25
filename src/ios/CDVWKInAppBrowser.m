@@ -723,6 +723,8 @@ static CDVWKInAppBrowser* instance = nil;
 @synthesize currentURL;
 
 CGFloat lastReducedStatusBarHeight = 0.0;
+
+BOOL viewRenderedAtLeastOnce = FALSE;
 BOOL isExiting = FALSE;
 
 - (id)initWithBrowserOptions: (CDVInAppBrowserOptions*) browserOptions andSettings:(NSDictionary *)settings
