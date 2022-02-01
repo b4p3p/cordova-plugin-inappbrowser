@@ -1235,6 +1235,28 @@ BOOL isExiting = FALSE;
 
 - (void)viewWillAppear:(BOOL)animated
 {   
+    // Fix notch with hidden statusbar
+    if (IsAtLeastiOSVersion(@"7.0") && !viewRenderedAtLeastOnce) {
+        viewRenderedAtLeastOnce = TRUE;
+        CGRect viewBounds = [self.webView bounds];
+
+        // Adding top notch fix.
+        bool hasTopNotch = NO;
+        if (@available(iOS 11.0, *)) {
+            hasTopNotch = [[[UIApplication sharedApplication] delegate] window].safeAreaInsets.top > 20.0;
+        }
+        if(hasTopNotch){
+            viewBounds.origin.y = [UIApplication sharedApplication].statusBarFrame.size.height + [[[UIApplication sharedApplication] delegate] window].safeAreaInsets.top;
+            viewBounds.size.height = viewBounds.size.height - [UIApplication sharedApplication].statusBarFrame.size.height - [[[UIApplication sharedApplication] delegate] window].safeAreaInsets.top;
+        } else {
+            viewBounds.origin.y = 0;
+            viewBounds.size.height = viewBounds.size.height;
+        }
+
+        self.webView.frame = viewBounds;
+        [[UIApplication sharedApplication] setStatusBarStyle:[self preferredStatusBarStyle]];
+    }
+
     [self rePositionViews];
 
     [super viewWillAppear:animated];
